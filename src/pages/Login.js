@@ -1,4 +1,5 @@
 // src/pages/Login.js
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Container, Row, Col, Form, Button, Alert, InputGroup } from "react-bootstrap";
@@ -6,7 +7,7 @@ import api from "../services/api";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// ✅ Helper to safely decode JWT payload (no extra library)
+// Helper to decode JWT payload
 function decodeJwt(token) {
     try {
         const base64 = token.split(".")[1];
@@ -54,33 +55,30 @@ export default function Login() {
             });
             console.log("🔹 Login response:", res.data);
 
-            // ✅ handle both possible backend response styles
             const token = res?.data?.token;
             const userIdFromResponse = res?.data?.userId;
             const roleFromResponse = res?.data?.role;
 
             if (!token) throw new Error("Missing token from server");
 
-            // Save token
+            // Save token globally for API calls
             localStorage.setItem("token", token);
             api.defaults.headers.common.Authorization = `Bearer ${token}`;
 
-            // ✅ Decode from token if backend doesn’t return directly
+            // Decode token for userId and role if not present in response
             const decoded = decodeJwt(token);
             const userId = userIdFromResponse || decoded.userId || decoded.id || decoded.sub;
             const role = roleFromResponse || decoded.role || decoded.authorities?.[0] || "CLIENT";
 
             if (!userId) console.warn("⚠️ userId not found in token or response — check backend claims");
 
-            // ✅ Persist details for later use (Profile, Dashboard, etc.)
             localStorage.setItem("userId", userId);
             localStorage.setItem("role", role);
 
             console.log("✅ Decoded role:", role);
             console.log("➡️ Navigating to:", role === "ADMIN" ? "/adminDashboard" : "/clientDashboard");
 
-
-            // 🔁 Redirect based on role
+            // Redirect according to role
             if (role === "ADMIN") navigate("/adminDashboard", { replace: true });
             else navigate("/clientDashboard", { replace: true });
 
@@ -105,7 +103,6 @@ export default function Login() {
                     {serverError && <Alert variant="danger">{serverError}</Alert>}
 
                     <Form onSubmit={onSubmit} noValidate>
-                        {/* Email */}
                         <Form.Group className="mb-3" controlId="email">
                             <Form.Label>Email</Form.Label>
                             <Form.Control
@@ -118,7 +115,6 @@ export default function Login() {
                             <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
                         </Form.Group>
 
-                        {/* Password with show/hide */}
                         <Form.Group className="mb-4" controlId="password">
                             <Form.Label>Password</Form.Label>
                             <InputGroup>
@@ -150,6 +146,12 @@ export default function Login() {
                     <div className="mt-3 text-center">
                         <small>
                             Don’t have an account? <Link to="/register">Register</Link>
+                        </small>
+                    </div>
+
+                    <div className="mt-2 text-center">
+                        <small>
+                            <Link to="/forgot-password">Forgot password?</Link>
                         </small>
                     </div>
                 </Col>

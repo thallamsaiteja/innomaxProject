@@ -1,10 +1,10 @@
 // src/pages/ClientDashboard.js
 import { useEffect, useState, useMemo } from "react";
 import { Container, Row, Col, Card, Spinner, Alert, ProgressBar, Table, Badge, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import api from "../services/api";
+import "../styles/ClientDashboard.css";
 
-// Small card for KPIs
 function KpiCard({ title, value, footer }) {
     return (
         <Card className="shadow-sm h-100">
@@ -19,64 +19,43 @@ function KpiCard({ title, value, footer }) {
 
 export default function ClientDashboard() {
     const navigate = useNavigate();
+    const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState("");
     const [data, setData] = useState(null);
 
-    // Format money nicely
-    const fmtMoney = (n) =>
-        typeof n === "number"
-            ? n.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })
-            : "-";
-
-    // Simple guard: if no token, push to login
     useEffect(() => {
-        const t = localStorage.getItem("token");
-        if (!t) navigate("/login", { replace: true });
+        const token = localStorage.getItem("token");
+        if (!token) navigate("/login", { replace: true });
     }, [navigate]);
 
     useEffect(() => {
-        let mounted = true;
         setLoading(true);
         setErr("");
 
         api
             .get("/api/dashboard/client")
-            .then((res) => {
-                if (!mounted) return;
-                setData(res.data);
-            })
+            .then((res) => setData(res.data))
             .catch((e) => {
-                if (!mounted) return;
                 const msg =
                     e?.response?.data?.message ||
                     e?.response?.data?.error ||
                     "Could not load dashboard. Please try again.";
                 setErr(msg);
             })
-            .finally(() => mounted && setLoading(false));
-
-        return () => {
-            mounted = false;
-        };
+            .finally(() => setLoading(false));
     }, []);
 
-    const {
-        name,
-        email,
-        totalAssets = 0,
-        totalLiabilities = 0,
-        netWorth = 0,
-        goals = [],
-        riskProfile = {},
-    } = data || {};
+    const { name, email, totalAssets = 0, totalLiabilities = 0, netWorth = 0, goals = [], riskProfile = {} } = data || {};
+
+    const fmtMoney = (n) =>
+        typeof n === "number"
+            ? n.toLocaleString("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 })
+            : "-";
 
     const topGoal = useMemo(() => {
         if (!goals?.length) return null;
-        // highest progress
-        return goals
-            .slice()
-            .sort((a, b) => (b.progress ?? 0) - (a.progress ?? 0))[0];
+        return goals.slice().sort((a, b) => (b.progress ?? 0) - (a.progress ?? 0))[0];
     }, [goals]);
 
     const onLogout = () => {
@@ -86,148 +65,132 @@ export default function ClientDashboard() {
         navigate("/login", { replace: true });
     };
 
+    const menuItems = [
+        { label: "Profile", path: "/profile" },
+        { label: "Goals", path: "/goals" },
+        { label: "Liabilities", path: "/liabilities" },
+        { label: "SIPs", path: "/sips" },
+        { label: "Risk Profile", path: "/risk-profile" },
+    ];
+
     return (
-        <Container className="py-4">
-            <Row className="align-items-center mb-3">
-                <Col>
-                    <h3 className="mb-0">Client Dashboard</h3>
-                    <div className="text-muted small">
-                        {name ? <span>{name}</span> : "Welcome"} {email ? `• ${email}` : ""}
-                    </div>
-                </Col>
-                <Col xs="auto">
-                    <Button variant="outline-secondary" onClick={onLogout}>
+        <div className="client-dashboard">
+            {/* Sidebar */}
+            <aside className="client-sidebar">
+                <h4 className="sidebar-title">Client Panel</h4>
+                <nav>
+                    {menuItems.map((item) => (
+                        <div
+                            key={item.path}
+                            className={`sidebar-item ${location.pathname === item.path ? "active" : ""}`}
+                            onClick={() => navigate(item.path)}
+                        >
+                            {item.label}
+                        </div>
+                    ))}
+                </nav>
+                <div className="sidebar-footer">
+                    <Button variant="outline-light" size="sm" onClick={onLogout}>
                         Logout
                     </Button>
-                </Col>
-            </Row>
-
-            {loading && (
-                <div className="d-flex justify-content-center py-5">
-                    <Spinner animation="border" />
                 </div>
-            )}
+            </aside>
 
-            {!loading && err && <Alert variant="danger">{err}</Alert>}
+            {/* Main Content */}
+            <main className="client-content">
+                <Container className="py-4">
+                    <h3 className="fw-semibold mb-3">Client Dashboard</h3>
+                    <div className="text-muted mb-4">
+                        {name ? `${name}` : "Welcome"} {email ? `• ${email}` : ""}
+                    </div>
 
-            {!loading && !err && (
-                <>
-                    {/* KPIs */}
-                    <Row xs={1} md={3} className="g-3 mb-3">
-                        <Col>
-                            <KpiCard title="Total Assets" value={fmtMoney(totalAssets)} footer="All investments & cash" />
-                        </Col>
-                        <Col>
-                            <KpiCard title="Total Liabilities" value={fmtMoney(totalLiabilities)} footer="Loans & dues" />
-                        </Col>
-                        <Col>
-                            <KpiCard title="Net Worth" value={fmtMoney(netWorth)} footer="Assets − Liabilities" />
-                        </Col>
-                    </Row>
+                    {loading && (
+                        <div className="d-flex justify-content-center py-5">
+                            <Spinner animation="border" />
+                        </div>
+                    )}
 
-                    {/* Goals + Risk Profile */}
-                    <Row className="g-3">
-                        <Col lg={8}>
-                            <Card className="shadow-sm">
-                                <Card.Body>
-                                    <div className="d-flex align-items-center justify-content-between mb-3">
-                                        <Card.Title className="mb-0">Your Goals</Card.Title>
-                                    </div>
+                    {!loading && err && <Alert variant="danger">{err}</Alert>}
 
-                                    {(!goals || goals.length === 0) && (
-                                        <div className="text-muted py-4 text-center">No goals yet. Add your first goal to get started.</div>
-                                    )}
+                    {!loading && !err && (
+                        <>
+                            {/* KPIs */}
+                            <Row xs={1} md={3} className="g-3 mb-3">
+                                <Col>
+                                    <KpiCard title="Total Assets" value={fmtMoney(totalAssets)} footer="All investments & cash" />
+                                </Col>
+                                <Col>
+                                    <KpiCard title="Total Liabilities" value={fmtMoney(totalLiabilities)} footer="Loans & dues" />
+                                </Col>
+                                <Col>
+                                    <KpiCard title="Net Worth" value={fmtMoney(netWorth)} footer="Assets − Liabilities" />
+                                </Col>
+                            </Row>
 
-                                    {!!goals?.length && (
-                                        <Table responsive hover className="align-middle">
-                                            <thead>
-                                                <tr>
-                                                    <th>Goal</th>
-                                                    <th className="text-end">Target</th>
-                                                    <th className="text-end">Achieved</th>
-                                                    <th style={{ width: 240 }}>Progress</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {goals.map((g, i) => {
-                                                    const progress = Math.min(100, Math.max(0, Math.round(g.progress ?? 0)));
-                                                    return (
-                                                        <tr key={i}>
-                                                            <td>
-                                                                <div className="fw-semibold">{g.name || g.goalName}</div>
-                                                                {g.timeline && <div className="small text-muted">{g.timeline}</div>}
-                                                            </td>
-                                                            <td className="text-end">{fmtMoney(g.target || g.targetAmount)}</td>
-                                                            <td className="text-end">{fmtMoney(g.achieved || g.achievedAmount)}</td>
-                                                            <td style={{ minWidth: 220 }}>
-                                                                <div className="d-flex align-items-center gap-2">
-                                                                    <div className="flex-grow-1">
-                                                                        <ProgressBar
-                                                                            now={progress}
-                                                                            variant={progress < 40 ? "danger" : progress < 80 ? "warning" : "success"}
-                                                                        />
-                                                                    </div>
-                                                                    <div className="small text-nowrap">{progress}%</div>
-                                                                </div>
-                                                            </td>
+                            {/* Goals & Risk */}
+                            <Row className="g-3">
+                                <Col lg={8}>
+                                    <Card className="shadow-sm">
+                                        <Card.Body>
+                                            <Card.Title>Your Goals</Card.Title>
+                                            {(!goals || goals.length === 0) && (
+                                                <div className="text-muted text-center py-4">No goals yet.</div>
+                                            )}
+                                            {!!goals?.length && (
+                                                <Table responsive hover className="align-middle">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Goal</th>
+                                                            <th className="text-end">Target</th>
+                                                            <th className="text-end">Achieved</th>
+                                                            <th style={{ width: 240 }}>Progress</th>
                                                         </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </Table>
-                                    )}
-                                </Card.Body>
-                            </Card>
-                        </Col>
-
-                        <Col lg={4}>
-                            <Card className="shadow-sm h-100">
-                                <Card.Body>
-                                    <Card.Title>Risk Profile</Card.Title>
-                                    {!riskProfile || (!riskProfile.riskType && !riskProfile.recommendedPortfolio) ? (
-                                        <div className="text-muted">No risk profile yet.</div>
-                                    ) : (
-                                        <>
-                                            <div className="mb-2">
-                                                <div className="text-muted small">Risk Type</div>
-                                                <div className="h5 mb-0">
-                                                    <Badge bg={
-                                                        /conservative/i.test(riskProfile.riskType)
-                                                            ? "secondary"
-                                                            : /moderate/i.test(riskProfile.riskType)
-                                                                ? "info"
-                                                                : "warning"
-                                                    }>
-                                                        {riskProfile.riskType}
-                                                    </Badge>
-                                                </div>
-                                            </div>
-
-                                            {riskProfile.recommendedPortfolio && (
-                                                <div className="mt-3">
-                                                    <div className="text-muted small">Recommended Portfolio</div>
-                                                    <div className="fw-semibold">{riskProfile.recommendedPortfolio}</div>
-                                                </div>
+                                                    </thead>
+                                                    <tbody>
+                                                        {goals.map((g, i) => {
+                                                            const progress = Math.min(100, Math.max(0, Math.round(g.progress ?? 0)));
+                                                            return (
+                                                                <tr key={i}>
+                                                                    <td>{g.name || g.goalName}</td>
+                                                                    <td className="text-end">{fmtMoney(g.target)}</td>
+                                                                    <td className="text-end">{fmtMoney(g.achieved)}</td>
+                                                                    <td>
+                                                                        <ProgressBar now={progress} variant={progress < 40 ? "danger" : progress < 80 ? "warning" : "success"} />
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                    </tbody>
+                                                </Table>
                                             )}
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
 
-                                            {topGoal && (
-                                                <div className="mt-4">
-                                                    <div className="text-muted small">Best Progress Goal</div>
-                                                    <div className="fw-semibold">{topGoal.name || topGoal.goalName}</div>
-                                                    <ProgressBar
-                                                        className="mt-2"
-                                                        now={Math.min(100, Math.max(0, Math.round(topGoal.progress ?? 0)))}
-                                                    />
-                                                </div>
+                                <Col lg={4}>
+                                    <Card className="shadow-sm h-100">
+                                        <Card.Body>
+                                            <Card.Title>Risk Profile</Card.Title>
+                                            {!riskProfile?.riskType ? (
+                                                <div className="text-muted">No risk profile yet.</div>
+                                            ) : (
+                                                <>
+                                                    <Badge bg="info" className="mb-3">{riskProfile.riskType}</Badge>
+                                                    {riskProfile.recommendedPortfolio && (
+                                                        <p className="small mb-1">
+                                                            Recommended Portfolio: <strong>{riskProfile.recommendedPortfolio}</strong>
+                                                        </p>
+                                                    )}
+                                                </>
                                             )}
-                                        </>
-                                    )}
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-                </>
-            )}
-        </Container>
+                                        </Card.Body>
+                                    </Card>
+                                </Col>
+                            </Row>
+                        </>
+                    )}
+                </Container>
+            </main>
+        </div>
     );
 }
