@@ -1,0 +1,418 @@
+/* Layout */
+.admin-dashboard {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f4f5f7;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background-color: #1e293b;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.sidebar-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #7ee2b8;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+    color: #ccc;
+}
+
+.sidebar-item:hover {
+    background-color: #334155;
+    color: white;
+}
+
+.sidebar-item.active {
+    background-color: #2563eb;
+    color: white;
+}
+
+/* Logout button */
+.logout-btn {
+    background-color: #dc2626;
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.logout-btn:hover {
+    background-color: #b91c1c;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 30px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+.content-box {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile Header */
+.mobile-header {
+    display: none;
+}
+
+.menu-btn {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 18px;
+}
+
+/* Mobile Sidebar */
+.mobile-menu {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    background: #1e293b;
+    width: 200px;
+    height: 100vh;
+    z-index: 1000;
+    color: white;
+    padding: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .mobile-header {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background: #1e293b;
+        color: white;
+        width: 100%;
+        height: 50px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 15px;
+        z-index: 999;
+    }
+
+    .main-content {
+        margin-top: 60px;
+    }
+}
+
+/* --- StatsCards Styling --- */
+.stats-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    /* space between cards */
+    margin-bottom: 30px;
+}
+
+.stats-card {
+    background: white;
+    border-radius: 12px;
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-3px);
+}
+
+.stats-card h3 {
+    color: #4b5563;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.stats-card p {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #111827;
+    margin: 0;
+}
+
+/* --- Clients Table Section --- */
+.client-container {
+    background: white;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.client-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+}
+
+.table th {
+    background-color: #1e293b !important;
+    color: #fff !important;
+}
+
+.table td {
+    color: #374151;
+}
+
+@media (max-width: 768px) {
+    .client-container {
+        padding: 15px;
+    }
+
+    .client-title {
+        font-size: 1.5rem;
+    }
+}
+
+/* --- Mobile Header --- */
+.mobile-header {
+    display: none;
+}
+
+.menu-btn {
+    background: #2563eb;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* --- Mobile Sidebar --- */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #1e293b;
+    width: 250px;
+    height: 100%;
+    z-index: 9999;
+    /* 🔥 Ensures it stays on top of content */
+    padding: 20px;
+    color: white;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease forwards;
+}
+
+/* slide animation for better feel */
+@keyframes slideIn {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 55px;
+        background-color: #1e293b;
+        color: white;
+        padding: 0 15px;
+        z-index: 10000;
+        /* keep header above everything */
+    }
+
+    .main-content {
+        margin-top: 60px;
+        padding: 20px;
+    }
+}
+
+/* --- Dashboard Cards Layout --- */
+.dashboard-section {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.dashboard-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 25px 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.dashboard-card h2 {
+    font-size: 1.4rem;
+    color: #1f2937;
+    margin-bottom: 20px;
+    font-weight: 600;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 8px;
+}
+
+/* --- Main Content --- */
+.main-content {
+    flex: 1;
+    padding: 40px;
+    overflow-y: auto;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+
+/* --- Responsive Cards --- */
+@media (max-width: 992px) {
+    .main-content {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-card {
+        padding: 20px;
+    }
+
+    .dashboard-card h2 {
+        font-size: 1.2rem;
+    }
+}
+
+/* --- Dashboard Stat Cards --- */
+.stats-row {
+    margin-bottom: 30px;
+}
+
+.stats-card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.stats-title {
+    color: #6b7280;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.stats-value {
+    color: #111827;
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+/* --- Icons for Cards --- */
+.stats-icon {
+    font-size: 2.2rem;
+    opacity: 0.85;
+}
+
+.stats-icon.users {
+    color: #2563eb;
+    /* blue */
+}
+
+.stats-icon.risks {
+    color: #16a34a;
+    /* green */
+}
+
+.stats-icon.sips {
+    color: #f59e0b;
+    /* yellow */
+}
+
+@media (max-width: 768px) {
+    .stats-value {
+        font-size: 1.4rem;
+    }
+
+    .stats-icon {
+        font-size: 1.8rem;
+    }
+}

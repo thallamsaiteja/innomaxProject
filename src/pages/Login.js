@@ -52,6 +52,7 @@ export default function Login() {
                 email: form.email.trim(),
                 password: form.password,
             });
+            console.log("🔹 Login response:", res.data);
 
             // ✅ handle both possible backend response styles
             const token = res?.data?.token;
@@ -74,6 +75,10 @@ export default function Login() {
             // ✅ Persist details for later use (Profile, Dashboard, etc.)
             localStorage.setItem("userId", userId);
             localStorage.setItem("role", role);
+
+            console.log("✅ Decoded role:", role);
+            console.log("➡️ Navigating to:", role === "ADMIN" ? "/adminDashboard" : "/clientDashboard");
+
 
             // 🔁 Redirect based on role
             if (role === "ADMIN") navigate("/adminDashboard", { replace: true });

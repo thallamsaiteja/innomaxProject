@@ -1,5 +1,14 @@
 import React from "react";
-import { FaChartPie, FaUsers, FaFlag, FaShieldAlt, FaCoins, FaClipboardList } from "react-icons/fa";
+import {
+    FaChartPie,
+    FaUsers,
+    FaFlag,
+    FaShieldAlt,
+    FaCoins,
+    FaClipboardList,
+    FaSignOutAlt,
+} from "react-icons/fa";
+import "../../styles/AdminDashboard.css";
 
 const Sidebar = ({ active, setActive }) => {
     const menu = [
@@ -11,21 +20,29 @@ const Sidebar = ({ active, setActive }) => {
         { key: "investments", label: "Investments", icon: <FaClipboardList /> },
     ];
 
+    const handleLogout = () => {
+        localStorage.clear();
+        window.location.href = "/login";
+    };
+
     return (
-        <div className="bg-gray-900 text-white w-64 h-screen p-5 flex flex-col">
-            <h2 className="text-xl font-semibold mb-6 text-center">Admin Panel</h2>
-            <ul className="space-y-2">
+        <div className="sidebar">
+            <h2 className="sidebar-title">Admin Panel</h2>
+            <ul className="sidebar-menu">
                 {menu.map((item) => (
                     <li
                         key={item.key}
+                        className={`sidebar-item ${active === item.key ? "active" : ""}`}
                         onClick={() => setActive(item.key)}
-                        className={`flex items-center gap-3 p-2 rounded cursor-pointer hover:bg-gray-700 ${active === item.key ? "bg-blue-600" : ""
-                            }`}
                     >
-                        {item.icon} <span>{item.label}</span>
+                        {item.icon}
+                        <span>{item.label}</span>
                     </li>
                 ))}
             </ul>
+            <button className="logout-btn" onClick={handleLogout}>
+                <FaSignOutAlt /> Logout
+            </button>
         </div>
     );
 };
