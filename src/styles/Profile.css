@@ -1,0 +1,49 @@
+.profile-page {
+    background-color: #f8f9fc;
+    min-height: 100vh;
+}
+
+.profile-card {
+    max-width: 950px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 15px;
+    background-color: #fff;
+}
+
+.profile-title {
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.form-label {
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    padding: 10px 12px;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 0.15rem rgba(37, 99, 235, 0.25);
+}
+
+.save-btn {
+    background: linear-gradient(90deg, #2563eb, #1e40af);
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+    background: linear-gradient(90deg, #1e3a8a, #1e40af);
+    transform: scale(1.02);
+}

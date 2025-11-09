@@ -206,6 +206,19 @@ export default function Register() {
                                 {submitting ? "Registering..." : "Register"}
                             </Button>
                         </div>
+
+                        <div className="text-center">
+                            <span className="text-muted">
+                                Already have an account?{" "}
+                                <Button
+                                    variant="link"
+                                    className="p-0 fw-semibold text-primary"
+                                    onClick={() => navigate("/login")}
+                                >
+                                    Login
+                                </Button>
+                            </span>
+                        </div>
                     </Form>
                 </Col>
             </Row>
