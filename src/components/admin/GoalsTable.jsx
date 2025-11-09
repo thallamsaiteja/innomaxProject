@@ -8,10 +8,14 @@ const GoalsTable = () => {
 
     useEffect(() => {
         getAllGoals()
-            .then(setGoals)
+            .then(data => {
+                console.log("Goals data:", data);
+                setGoals(data);
+            })
             .catch((err) => console.error("Error fetching goals:", err))
             .finally(() => setLoading(false));
     }, []);
+
 
     if (loading)
         return (

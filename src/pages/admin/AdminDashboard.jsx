@@ -89,18 +89,18 @@ const AdminDashboard = () => {
 
             {/* Mobile Sidebar */}
             {menuOpen && (
-                <div
-                    className="mobile-menu"
-                    onClick={() => setMenuOpen(false)}
-                >
-                    <Sidebar
-                        active={active}
-                        setActive={(key) => {
-                            setActive(key);
-                            setMenuOpen(false);
-                        }}
-                    />
-                </div>
+                <>
+                    <div className="menu-overlay" onClick={() => setMenuOpen(false)} />
+                    <div className="mobile-menu">
+                        <Sidebar
+                            active={active}
+                            setActive={(key) => {
+                                setActive(key);
+                                setMenuOpen(false);
+                            }}
+                        />
+                    </div>
+                </>
             )}
 
             {/* Main Content */}
