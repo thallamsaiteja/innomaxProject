@@ -1,59 +1,45 @@
-// src/services/adminApi.js
 import api from "./api";
-
-// If your api instance already adds the token via interceptor, no headers are needed.
-// Leaving headers here for clarity and to avoid confusion.
-
-const authHeader = () => ({
-    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-});
 
 // Lists for tables
 export const getAllClients = async () => {
-    const res = await api.get("/api/dashboard/admin/clients", authHeader());
+    const res = await api.get("/api/dashboard/admin/clients");
     return res.data;
 };
 
+export const getTotalClients = async () => {
+    const res = await api.get("/api/dashboard/admin/analytics/overview");
+    return res.data.totalClients; // 👈 only total clients
+};
+
 export const getAllGoals = async () => {
-    const res = await api.get("/api/dashboard/admin/goals", authHeader());
+    const res = await api.get("/api/dashboard/admin/goals");
     return res.data;
 };
 
 export const getAllRisks = async () => {
-    const res = await api.get("/api/dashboard/admin/risks", authHeader());
+    const res = await api.get("/api/dashboard/admin/risks");
     return res.data;
 };
 
 export const getAllSIPs = async () => {
-    const res = await api.get("/api/dashboard/admin/sips", authHeader());
+    const res = await api.get("/api/dashboard/admin/sips");
     return res.data;
 };
 
-
 // 🟢 Dashboard Overview (Combined Summary)
 export const getAdminOverview = async () => {
-    const token = localStorage.getItem("token");
-    const res = await api.get("/api/dashboard/admin/analytics/overview", {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await api.get("/api/dashboard/admin/analytics/overview");
     return res.data;
 };
 
 // 🟢 Risk Stats
 export const getRiskStats = async () => {
-    const token = localStorage.getItem("token");
-    const res = await api.get("/api/dashboard/admin/analytics/risk-stats", {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await api.get("/api/dashboard/admin/analytics/risk-stats");
     return res.data;
 };
 
 // 🟢 Goals and Liabilities
 export const getGoalsLiabilities = async () => {
-    const token = localStorage.getItem("token");
-    const res = await api.get("/api/dashboard/admin/analytics/goals-liabilities", {
-        headers: { Authorization: `Bearer ${token}` },
-    });
+    const res = await api.get("/api/dashboard/admin/analytics/goals-liabilities");
     return res.data;
 };
-
